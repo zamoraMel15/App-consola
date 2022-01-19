@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+
 require('colors');
 
 const questions = [
@@ -69,7 +70,7 @@ const pause = async() => {
 
 const readInput = async( message ) => {
     
-    const questionss = [
+    const questions = [
         {
            type: 'input',
            name:  'description',
@@ -85,12 +86,103 @@ const readInput = async( message ) => {
         }
     ];
 
-    const { description } = await inquirer.prompt(questionss);
+    const { description } = await inquirer.prompt(questions);
     return description;
 }
+
+const listHomeworkDelete = async( homeworks = [] ) => {
+    
+    const choices = homeworks.map( (homework, i ) => {
+        
+        const idx = `${i + 1}`.green;
+        
+        return {
+            
+            value: homework.id,
+            name: `${idx} ${ homework.description }`
+        }
+    });
+
+    choices.unshift({
+        value: '0',
+        name: '0'.green + 'Cancelar'
+
+    });
+
+    const question = [
+        
+        {
+            type: 'List',
+            name: 'id',
+            message: 'Borrar',
+            choices
+
+        }
+  
+    ]
+
+    const { id } =  await inquirer.prompt(question);
+
+    return id;
+   
+}
+
+const confirmation = async (message) => {
+
+    const question = [
+
+        {
+        
+            type: 'confirm',
+            name: 'ok',
+            message
+        }
+    ];
+
+    const { ok } = await inquirer.prompt(question);
+
+    return ok;
+}
+
+const showListingCheckList = async( homeworks = [] ) => {
+    
+    const choices = homeworks.map( (homework, i ) => {
+        
+        const idx = `${i + 1}`.green;
+        
+        return {
+            
+            value: homework.id,
+            name: `${idx} ${ homework.description }`,
+            checked: ( homework.completedIn ) ? true : false
+        }
+    });
+
+    const question = [
+        
+        {
+            type: 'checkBox',
+            name: 'ids',
+            message: 'Selecciones',
+            choices
+
+        }
+  
+    ]
+
+    const { ids } =  await inquirer.prompt(question);
+
+    return ids;
+   
+}
+
+
 
 module.exports = {
     inquirerMenu,
     pause,
-    readInput 
+    readInput,
+    listHomeworkDelete, 
+    confirmation,
+    showListingCheckList
 }
